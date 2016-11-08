@@ -8,6 +8,6 @@ module.exports = (robot) ->
 	    if (err)
         res.send "Error: " + err
 	    else
-		    res.send "Success!1 :)"
+		    res.send "Success! :)"
     gitPull('/app/scripts',callback)
     robot.emit 'bot reload'
