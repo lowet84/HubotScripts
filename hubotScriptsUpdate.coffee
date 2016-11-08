@@ -10,3 +10,4 @@ module.exports = (robot) ->
 	    else
 		    res.send "Success! :)"
     gitPull('/app/scripts',callback)
+    robot.emit 'bot reload'
