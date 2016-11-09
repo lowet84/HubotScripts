@@ -15,6 +15,21 @@ module.exports = (robot) ->
           res.send err
     gitPull('/app/scripts',callback)
 
+  walkSync = (dir, filelist) ->
+    #walk through given directory and collect files
+    files = Fs.readdirSync(dir)
+    filelist = filelist || []
+    for file in files
+      fullPath = Path.join(dir,file)
+      robot.logger.debug "Scanning file : #{fullPath}"
+
+      if (Fs.statSync(fullPath).isDirectory())
+        filelist = walkSync(fullPath, filelist)
+      else
+        #add full path file to returning collection
+        filelist.push(fullPath)
+    return filelist
+    
   success = (msg) ->
   # Cleanup old listeners and help
     for listener in oldListeners
