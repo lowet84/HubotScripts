@@ -1,5 +1,7 @@
 # Comment!
 gitPull = require('git-pull')
+Fs       = require 'fs'
+Path     = require 'path'
 
 module.exports = (robot) ->
   robot.respond /scripts/i, (res) ->
