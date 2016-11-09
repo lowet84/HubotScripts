@@ -27,12 +27,12 @@ module.exports = (robot) ->
       robot.listeners = []
 
       callback = (err, consoleOutput) ->
-      if(err)
-        res.send "Error: " + err
-      else
-        res.send "Downloaded new scripts from github :)"
-        reloadAllScripts res,success,(err)->
-          res.send err
+        if(err)
+          res.send "Error: " + err
+        else
+          res.send "Downloaded new scripts from github :)"
+          reloadAllScripts res,success,(err)->
+            res.send err
       gitPull('/app/scripts',callback)
 
     catch error
