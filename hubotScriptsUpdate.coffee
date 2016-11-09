@@ -1,6 +1,5 @@
 # Comment!
 gitPull = require('git-pull')
-reload = require('hubot-reload-scripts')
 
 module.exports = (robot) ->
   robot.respond /scripts/i, (res) ->
