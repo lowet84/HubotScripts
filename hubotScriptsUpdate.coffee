@@ -1,22 +1,55 @@
-# Comment!
-gitPull = require('git-pull')
+# Description:
+#   Allows Hubot to (re)load scripts without restart
+#
+# Commands:
+#   hubot reload - Reloads scripts without restart. Loads new scripts too. (a fork version that works perfectly)
+#
+# Author:
+#   spajus
+#   vinta
+#   m-seldin
+
 Fs       = require 'fs'
 Path     = require 'path'
+gitPull = require 'git-pull'
+
+oldCommands = null
+oldListeners = null
 
 module.exports = (robot) ->
-  robot.respond /scripts/i, (res) ->
-    res.send "Getting scripts from github"
-    callback = (err, consoleOutput) ->
+
+  robot.respond /scripts/i,  (msg) ->
+    try
+      oldCommands = robot.commands
+      oldListeners = robot.listeners
+
+      robot.commands = []
+      robot.listeners = []
+
+      callback = (err, consoleOutput) ->
       if(err)
         res.send "Error: " + err
       else
-        res.send "Success!1 :)"
+        res.send "Downloaded new scripts from github :)"
         reloadAllScripts res,success,(err)->
           res.send err
-    gitPull('/app/scripts',callback)
+      gitPull('/app/scripts',callback)
+
+    catch error
+      console.log "Hubot reloader:", error
+      msg.send "Could not reload all scripts: #{error}"
+
+  success = (msg) ->
+# Cleanup old listeners and help
+    for listener in oldListeners
+      listener = {}
+    oldListeners = null
+    oldCommands = null
+    msg.send "Reloaded all scripts"
+
 
   walkSync = (dir, filelist) ->
-    #walk through given directory and collect files
+#walk through given directory and collect files
     files = Fs.readdirSync(dir)
     filelist = filelist || []
     for file in files
@@ -26,18 +59,11 @@ module.exports = (robot) ->
       if (Fs.statSync(fullPath).isDirectory())
         filelist = walkSync(fullPath, filelist)
       else
-        #add full path file to returning collection
+#add full path file to returning collection
         filelist.push(fullPath)
     return filelist
-    
-  success = (msg) ->
-  # Cleanup old listeners and help
-    for listener in oldListeners
-      listener = {}
-    oldListeners = null
-    oldCommands = null
-    msg.send "Reloaded all scripts"
 
+  # ref: https://github.com/srobroek/hubot/blob/e543dff46fba9e435a352e6debe5cf210e40f860/src/robot.coffee
   deleteScriptCache = (scriptsBaseDir) ->
     if Fs.existsSync(scriptsBaseDir)
       fileList = walkSync scriptsBaseDir
