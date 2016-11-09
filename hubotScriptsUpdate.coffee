@@ -10,7 +10,7 @@ module.exports = (robot) ->
       if(err)
         res.send "Error: " + err
       else
-        res.send "Success! :)"
+        res.send "Success!1 :)"
         reloadAllScripts res,success,(err)->
           res.send err
     gitPull('/app/scripts',callback)
