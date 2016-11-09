@@ -30,7 +30,7 @@ module.exports = (robot) ->
         if(err)
           msg.send "Error: " + err
         else
-          msg.send "Downloaded new scripts from github :) 1"
+          msg.send "Downloaded new scripts from github :)"
           reloadAllScripts msg,success,(err)->
             msg.send err
       gitPull('/app/scripts',callback)
